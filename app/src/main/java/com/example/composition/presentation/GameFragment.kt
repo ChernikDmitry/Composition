@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.composition.R
 import com.example.composition.databinding.FragmentGameBinding
+import com.example.composition.domain.entity.GameResult
+import com.example.composition.domain.entity.GameSettings
 import com.example.composition.domain.entity.Level
 
 class GameFragment:Fragment() {
@@ -29,6 +32,16 @@ class GameFragment:Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.tvOption1.setOnClickListener(){
+            val settings = GameSettings(10,10,10,10)
+            val gameResult = GameResult(true,5,5,settings)
+            launchGameFinishedFragment(gameResult)
+        }
+
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -38,8 +51,17 @@ class GameFragment:Fragment() {
         level=requireArguments().getSerializable(KEY_LEVEL) as Level
     }
 
+    private fun launchGameFinishedFragment (gameResult: GameResult){
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.main_container,GameFinishedFragment.newInstance(gameResult))
+            .addToBackStack(null)
+            .commit()
+    }
+
+
     companion object{
         private const val KEY_LEVEL  = "level"
+        const val NAME = "GameFragment"
         fun newInstance(level: Level):GameFragment{
             return GameFragment().apply {
                 arguments=Bundle().apply {
