@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.composition.R
 import com.example.composition.databinding.FragmentGameBinding
 import com.example.composition.domain.entity.GameResult
@@ -12,6 +13,7 @@ import com.example.composition.domain.entity.GameSettings
 import com.example.composition.domain.entity.Level
 
 class GameFragment : Fragment() {
+    private lateinit var viewModel: GameViewModel
     private lateinit var level: Level
 
     private var _binding: FragmentGameBinding? = null
@@ -34,6 +36,11 @@ class GameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this)[GameViewModel::class.java]
+        viewModel.generateQuestion(6)
+        observeViewModel()
+
+
         binding.tvOption1.setOnClickListener() {
             val settings = GameSettings(10, 10, 10, 10)
             val gameResult = GameResult(true, 5, 5, settings)
@@ -46,6 +53,19 @@ class GameFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+        private fun observeViewModel(){
+            viewModel.question.observe(viewLifecycleOwner){
+                val question = it
+                binding.tvOption1.setText(question.options[0])
+                binding.tvOption1.setText(question.options[1])
+                binding.tvOption1.setText(question.options[2])
+                binding.tvOption1.setText(question.options[3])
+                binding.tvOption1.setText(question.options[4])
+                binding.tvOption1.setText(question.options[5])
+                binding.tvSum.setText(question.sum)
+                binding.tvLeftNumber.setText(question.visibleNumber)
+            }
+        }
 
     private fun parseArgs() {
         requireArguments().getParcelable<Level>(KEY_LEVEL)?.let {
