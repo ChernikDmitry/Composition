@@ -58,7 +58,6 @@ class GameFragment:Fragment() {
             .commit()
     }
 
-
     companion object{
         private const val KEY_LEVEL  = "level"
         const val NAME = "GameFragment"
