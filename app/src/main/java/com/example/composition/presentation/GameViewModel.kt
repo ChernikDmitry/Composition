@@ -99,7 +99,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun getGameSettings(level: Level) {
         this.level = level
-        this.gameSettings = getGameSettingsUseCase.invoke(level)
+        this.gameSettings = getGameSettingsUseCase(level)
         _minPercent.value = gameSettings.minPercentOfRightAnswers
     }
 
