@@ -4,6 +4,8 @@ import com.example.composition.domain.entity.GameSettings
 import com.example.composition.domain.entity.Level
 import com.example.composition.domain.entity.Question
 import com.example.composition.domain.repository.GameRepository
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.random.Random
 
 object GameRepositoryImpl : GameRepository {
@@ -17,8 +19,10 @@ object GameRepositoryImpl : GameRepository {
         val options = HashSet<Int>()
         val rightAnswer = sum - visibleNumber
         options.add(rightAnswer)
+        val from = max(rightAnswer - countOfOptions, MIN_ANSWER_VALUE)
+        val to = min(maxSumValue, rightAnswer + countOfOptions)
         while (options.size < countOfOptions) {
-            options.add(Random.nextInt(MIN_ANSWER_VALUE, sum))
+            options.add(Random.nextInt(from, to))
         }
         return Question(sum, visibleNumber, options.toList())
     }
@@ -43,7 +47,7 @@ object GameRepositoryImpl : GameRepository {
             }
             Level.NORMAL -> {
                 GameSettings(
-                    10,
+                    20,
                     20,
                     80,
                     40
