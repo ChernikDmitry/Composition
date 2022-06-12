@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
+import com.example.composition.R
 import com.example.composition.databinding.FragmentGameFinishedBinding
 import com.example.composition.domain.entity.GameResult
 import com.example.composition.domain.entity.Level
@@ -34,12 +35,47 @@ class GameFinishedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupClickListener()
+        bindViews()
+
+    }
+
+    private fun bindViews() {
+        with(binding) {
+            tvRequiredAnswers.text = String.format(
+                getString(R.string.required_score),
+                gameResult.gameSettings.minCountOfRightAnswers
+            )
+            tvScoreAnswers.text = String.format(
+                getString(R.string.score_answers),
+                gameResult.countOfRightAnswers
+            )
+            tvRequiredPercentage.text = String.format(
+                getString(R.string.required_percentage),
+                gameResult.gameSettings.minPercentOfRightAnswers
+            )
+            tvScorePercentage.text = String.format(
+                getString(R.string.score_percentage),
+                gameResult.countOfRightAnswers / gameResult.countOfRightAnswers.toDouble() * 100
+            )
+            if (gameResult.winner) {
+                emojiResult.setImageResource(R.drawable.ic_smile)
+            } else {
+                emojiResult.setImageResource(R.drawable.ic_sad)
+            }
+        }
+    }
+
+    private fun setupClickListener(){
         val callback =object :OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
                 retryGame()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,callback)
+        binding.buttonRetry.setOnClickListener{
+            retryGame()
+        }
     }
 
     override fun onDestroyView() {
