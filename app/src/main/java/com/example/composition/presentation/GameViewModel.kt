@@ -5,7 +5,6 @@ import android.os.CountDownTimer
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.composition.R
 import com.example.composition.data.GameRepositoryImpl
 import com.example.composition.domain.entity.GameResult
@@ -61,8 +60,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         getGameSettings(level)
         startTimer()
         generateQuestion()
-
-
+        updateProgress()
     }
 
     fun chooseAnswer(number: Int) {
@@ -72,7 +70,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun updateProgress() {
-        val persent = calculatePersentOfRightAnswers()
+        val persent = calculatePercentOfRightAnswers()
         _percentOfRightAnswers.value = persent
         _progressAnswers.value = String.format(
             context.resources.getString(R.string.progress_answers),
@@ -84,7 +82,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         _enoughPercentOfRightAnswers.value = persent >= gameSettings.minPercentOfRightAnswers
     }
 
-    private fun calculatePersentOfRightAnswers(): Int {
+    private fun calculatePercentOfRightAnswers(): Int {
+        if (countOfQuestions==0){
+            return 0
+        }
         return (countOfRightAnswers / countOfQuestions.toDouble() * 100).toInt()
     }
 
@@ -105,7 +106,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun startTimer() {
         timer = object : CountDownTimer(
-            gameSettings.gameTimeInSeconds / MILLIS_IN_SECOND,
+            gameSettings.gameTimeInSeconds * MILLIS_IN_SECOND,
             MILLIS_IN_SECOND
         ) {
             override fun onTick(millisUntilFinished: Long) {
