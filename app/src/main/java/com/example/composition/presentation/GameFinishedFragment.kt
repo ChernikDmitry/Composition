@@ -56,13 +56,21 @@ class GameFinishedFragment : Fragment() {
             )
             tvScorePercentage.text = String.format(
                 getString(R.string.score_percentage),
-                gameResult.countOfRightAnswers / gameResult.countOfRightAnswers.toDouble() * 100
+                getPercentOfRightAnswers()
             )
             if (gameResult.winner) {
                 emojiResult.setImageResource(R.drawable.ic_smile)
             } else {
                 emojiResult.setImageResource(R.drawable.ic_sad)
             }
+        }
+    }
+
+    private fun getPercentOfRightAnswers() = with(gameResult) {
+        if (countOfQuestion == 0) {
+            0
+        } else {
+            ((countOfRightAnswers / countOfQuestion.toDouble()) * 100).toInt()
         }
     }
 
