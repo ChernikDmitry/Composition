@@ -1,7 +1,5 @@
 package com.example.composition.presentation
 
-import android.content.Context
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.composition.R
 import com.example.composition.databinding.FragmentGameBinding
 import com.example.composition.domain.entity.GameResult
-import com.example.composition.domain.entity.GameSettings
 import com.example.composition.domain.entity.Level
 
 class GameFragment : Fragment() {
@@ -144,14 +140,14 @@ class GameFragment : Fragment() {
     }
 
     private fun launchGameFinishedFragment(gameResult: GameResult) {
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.main_container, GameFinishedFragment.newInstance(gameResult))
-            .addToBackStack(null)
-            .commit()
+        val args = Bundle().apply {
+            putSerializable(GameFinishedFragment.KEY_GAME_RESULT, gameResult)
+        }
+        findNavController().navigate(R.id.action_gameFragment_to_gameFinishedFragment,args)
     }
 
     companion object {
-        private const val KEY_LEVEL = "level"
+        const val KEY_LEVEL = "level"
         const val NAME = "GameFragment"
         fun newInstance(level: Level): GameFragment {
             return GameFragment().apply {
