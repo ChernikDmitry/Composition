@@ -7,4 +7,7 @@ data class GameResult(
     val countOfRightAnswers:Int,
     val countOfQuestion: Int,
     val gameSettings: GameSettings
-):Serializable
+):Serializable{
+    val countOfRightAnswersString:String
+    get() = countOfRightAnswers.toString()
+}
